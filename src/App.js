@@ -45,7 +45,7 @@ class App extends Component {
         <div className="container-fluid">
           <div className="row">
             <header className="col-lg-12">
-              <div className="github col-lg-4 center-block">
+              <div className="github col-lg-4 col-xs-12 center-block">
                 <img src={logo} className="App-logo" alt="Github + React" />
               </div>
             </header>
@@ -67,7 +67,7 @@ class App extends Component {
                 </form>
               </section>
 
-              <aside className="col-lg-3">
+              <aside className="col-lg-3 col-xs-12 col-sm-12 col-md-3">
                 {
                   this.state.usuario.map(function(dados){
                     return (
@@ -91,7 +91,7 @@ class App extends Component {
 
               </aside>
 
-                <div className="col-lg-9">
+                <div className="col-lg-9 col-xs-12 col-sm-12 col-md-9">
                   {
                     this.state.repositories.map(function(resp){
                       return(

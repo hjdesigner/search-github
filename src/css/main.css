@@ -80,3 +80,14 @@ body{
   font-weight: 300;
   font-size: 1.5em;
 }
+@media screen and (max-width: 768px) {
+  .repositories{
+    width: 100%;
+    margin-left: 0;
+  }
+}
+@media screen and (max-width: 425px) {
+  .github img{
+    width: 100%;
+  }
+}
