@@ -7,7 +7,9 @@ import './fonts/glyphicons-halflings-regular.svg';
 import './fonts/glyphicons-halflings-regular.ttf';
 import './fonts/glyphicons-halflings-regular.woff';
 import './fonts/glyphicons-halflings-regular.woff2';
-import logo from './images/logo.jpg';
+import Header from './components/Header';
+
+
 
 class App extends Component {
   constructor(){
@@ -26,14 +28,26 @@ class App extends Component {
       dataType: 'json',
       success:function(resposta){
         this.setState({usuario:[resposta]});
-      }.bind(this)
+      }.bind(this),
+      complete:function(resposta){
+        $('[data-js="box-preload"]').removeClass('ativo');
+      }
+    })
+    .always(function(){
+      $('[data-js="box-preload"]').addClass('ativo');
     });
     $.ajax({
       url: urlRepo,
       dataType: 'json',
       success:function(resposta){
         this.setState({repositories:resposta});
-      }.bind(this)
+      }.bind(this),
+      complete:function(resposta){
+        $('[data-js="box-preload"]').removeClass('ativo');
+      }
+    })
+    .always(function(){
+      $('[data-js="box-preload"]').addClass('ativo');
     });
   }
   setNome(evento){
@@ -45,9 +59,7 @@ class App extends Component {
         <div className="container-fluid">
           <div className="row">
             <header className="col-lg-12">
-              <div className="github col-lg-4 col-xs-12 center-block">
-                <img src={logo} className="App-logo" alt="Github + React" />
-              </div>
+              <Header />
             </header>
 
             <div className="main col-lg-12">
@@ -67,6 +79,14 @@ class App extends Component {
                 </form>
               </section>
 
+              <section className="box-preload" data-js="box-preload">
+                <div className="preloaders-3">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </section>
+
               <aside className="col-lg-3 col-xs-12 col-sm-12 col-md-3">
                 {
                   this.state.usuario.map(function(dados){
@@ -79,7 +99,6 @@ class App extends Component {
                         <p>{dados.email}</p>
                         <p>Followers: {dados.followers}</p>
                         <p>Following: {dados.following}</p>
-                        <p>Respositories: {dados.public_repos}</p>
                         <p>
                           {dados.bio}
                         </p>
@@ -98,7 +117,7 @@ class App extends Component {
                         <section className="repositories" key={resp.id}>
                           <h3>{resp.name}</h3>
                           <p>{resp.description}</p>
-                          <button type="button" className="btn btn-primary btn-block" data-name={resp.full_name}>Mais Detalhes</button>
+                          <a href={resp.html_url} target="_blank" className="btn btn-primary">Acessar Repositorio</a>
                         </section>
                       );
                     })
