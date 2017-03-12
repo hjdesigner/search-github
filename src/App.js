@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import PubSub from 'pubsub-js';
 import './css/bootstrap.css';
 import './css/main.css';
 import './fonts/glyphicons-halflings-regular.eot';
@@ -8,13 +9,16 @@ import './fonts/glyphicons-halflings-regular.ttf';
 import './fonts/glyphicons-halflings-regular.woff';
 import './fonts/glyphicons-halflings-regular.woff2';
 import Header from './components/Header';
+import InputCustom from './components/InputCustom';
+import ButtonCustom from './components/ButtonCustom';
+import TratadorErros from './components/TratadorErros';
 
 
 
 class App extends Component {
   constructor(){
     super();
-    this.state = {usuario : [],repositories : [], nome:''};
+    this.state = {usuario : [],repositories : [], nome:'', msgErro:''};
     this.enviaForm = this.enviaForm.bind(this);
     this.setNome = this.setNome.bind(this);
   }
@@ -28,9 +32,18 @@ class App extends Component {
       dataType: 'json',
       success:function(resposta){
         this.setState({usuario:[resposta]});
+        this.setState({nome: ''});
       }.bind(this),
       complete:function(resposta){
         $('[data-js="box-preload"]').removeClass('ativo');
+      },
+      error:function(resposta){
+        if(resposta.status === 404){
+          new TratadorErros().publicaErros(resposta.responseJSON);
+        }
+      },
+      beforeSend: function(){
+        PubSub.publish("limpa-erros",{});
       }
     })
     .always(function(){
@@ -54,6 +67,15 @@ class App extends Component {
     this.setState({nome:evento.target.value});
   }
 
+  componentDidMount(){
+    PubSub.subscribe("erro-validacao",function(topico,erro){
+      this.setState({msgErro:erro.message});
+    }.bind(this));
+    PubSub.subscribe("limpa-erros",function(topico){
+      this.setState({msgErro:''});
+    }.bind(this));
+  }
+
   render() {
     return (
         <div className="container-fluid">
@@ -69,14 +91,14 @@ class App extends Component {
                 <form onSubmit={this.enviaForm} method="post">
                   <div className="Form-group">
                     <div className="input-group">
-                      <label htmlFor="nome"></label>
-                      <input id="nome" type="text" name="nome" className="form-control col-lg-12 input-lg" placeholder="Digite o usuário do github" value={this.state.nome} onChange={this.setNome} required />
-                      <span className="input-group-btn">
-                        <button type="submit" className="btn btn-default btn-lg">Buscar</button>
-                      </span>
+                      <InputCustom id="nome" type="text" name="nome" className="form-control col-lg-12 input-lg" placeholder="Digite o usuário do github" value={this.state.nome} onChange={this.setNome} />
+                      <ButtonCustom type="submit" className="btn btn-default btn-lg" label="Buscar"/>
                     </div>
                   </div>
                 </form>
+                <div className="error">
+                  <p>{this.state.msgErro}</p>
+                </div>
               </section>
 
               <section className="box-preload" data-js="box-preload">
