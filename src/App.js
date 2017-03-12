@@ -9,6 +9,7 @@ import './fonts/glyphicons-halflings-regular.ttf';
 import './fonts/glyphicons-halflings-regular.woff';
 import './fonts/glyphicons-halflings-regular.woff2';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import InputCustom from './components/InputCustom';
 import ButtonCustom from './components/ButtonCustom';
 import TratadorErros from './components/TratadorErros';
@@ -118,6 +119,7 @@ class App extends Component {
                           <img src={dados.avatar_url} className="img-reponsive" alt="Avatar" />
                         </figure>
                         <h2> {dados.name} </h2>
+                        <p><strong>{dados.login}</strong></p>
                         <p>{dados.email}</p>
                         <p>Followers: {dados.followers}</p>
                         <p>Following: {dados.following}</p>
@@ -144,11 +146,12 @@ class App extends Component {
                       );
                     })
                   }
-
-
-
                 </div>
             </div>
+
+            <footer className="col-lg-12">
+              <Footer />
+            </footer>
 
           </div>
         </div>
